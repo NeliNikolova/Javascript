@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Generator</title>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"
+            integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="wrapper">
+
+</div>
+<script src="book-generator.js"></script>
+<script>
+    window.onload = function () {
+
+        createBook("#wrapper", "Alice in Wonderland", "Lewis Carroll", 1111);
+        (function createBook() {
+            let count = 1;
+            return function (section, title, author, isbn) {
+
+                let selector = $(section).attr('id', 'book' + count);
+
+                selector.append($('<p>').addClass('title').text(`${title}`))
+
+                function timer() {
+                    let time = 0, intervalId, isRunning = false;
+                    $('#start-timer').on('click', function () {
+                        if (!isRunning) {
+                            intervalId = setInterval(timeCount, 1000);
+                            isRunning = true;
+                        }
+                    });
+                    $('#stop-timer').on('click', function () {
+                        clearInterval(intervalId)
+                        isRunning = false;
+                    });
+
+                }
+            }
+            count++;
+    })
+    }
+</script>
+</body>
+</html>
