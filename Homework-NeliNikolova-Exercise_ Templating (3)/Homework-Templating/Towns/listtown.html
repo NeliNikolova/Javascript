@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Town</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="towns.js"></script>
+</head>
+<body>
+<input id="towns" type="text"/>
+<button id="btnLoadTowns">Load</button>
+<div id="root"></div>
+</body>
+<script>
+    $(() => attachEvents())
+    function attachEvents(){
+        $("#root").html()
+        let source=$('#towns-template').html();
+        let template=Handlebars.compile(source);
+        $('#btnLoadTowns').on('click',function(){
+            let context={name:[]};
+            let dataArr=$('#towns').val().split(', ')
+            for (let obj of dataArr) {
+                context.name.push(obj);
+            }
+            console.log(context)
+            $("#root").html(template(context))
+        })
+
+    }
+</script>
+<script type="text/x-handlebars-template" id="towns-template">
+    <ul>
+        {{#each name}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
+</script>
+</html>
