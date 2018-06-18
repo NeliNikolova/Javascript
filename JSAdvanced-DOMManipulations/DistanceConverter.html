@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Distance Converter</title>
+    <script src="distanceConverter.js"></script>
+    <style>
+        label, input {
+            display: inline-block;
+            width: 5em;
+        }
+
+        label {
+            text-align: right;
+        }
+    </style>
+</head>
+<body onload="attachEventsListeners()">
+<h1>Distance Converter</h1>
+<div>
+    <label for="inputDistance">From:</label>
+    <input type="text" id="inputDistance">
+    <select id="inputUnits">
+        <option value="km">Kilometers</option>
+        <option value="m">Meters</option>
+        <option value="cm">Centimeters</option>
+        <option value="mm">Millimeters</option>
+        <option value="mi">Miles</option>
+        <option value="yrd">Yards</option>
+        <option value="ft">Feet</option>
+        <option value="in">Inches</option>
+    </select>
+    <input type="button" id="convert" value="Convert">
+</div>
+<div>
+    <label for="outputDistance">To:</label>
+    <input type="text" id="outputDistance" disabled="disabled">
+    <select id="outputUnits">
+        <option value="km">Kilometers</option>
+        <option value="m">Meters</option>
+        <option value="cm">Centimeters</option>
+        <option value="mm">Millimeters</option>
+        <option value="mi">Miles</option>
+        <option value="yrd">Yards</option>
+        <option value="ft">Feet</option>
+        <option value="in">Inches</option>
+    </select>
+    <script >
+        function attachEventsListeners(){
+            document.getElementById('convert').addEventListener('click',calc);
+            function calc(){
+                let elem = document.getElementById("inputUnits").value;
+                let second = document.getElementById("outputUnits").value;
+                let inputDistance=Number(document.getElementById("inputDistance").value);
+                let unknown=0;
+                let result=0;
+                    switch(elem){
+
+                        case "km":
+                             result=inputDistance*1000;
+                            break;
+                        case "m":
+                             result=inputDistance;
+                            break;
+                        case "cm":
+                            result=inputDistance*0.01;
+                            break;
+                        case "mm":
+                             result=inputDistance*0.001;
+                            break;
+                        case "mi":
+                            result=inputDistance*1609.34;
+                            break;
+                        case "yrd":
+                            result=inputDistance*0.9144;
+                            break;
+                        case "ft":
+                             result=inputDistance*0.3048;
+                            break;
+                        case "in":
+                            result=inputDistance*0.0254;
+                            break;
+                    }
+
+
+                switch(second){
+
+                        case "km":
+                             unknown=result/1000;
+                            break;
+                        case "m":
+                             unknown=result;
+                            break;
+                        case "cm":
+                             unknown=result/0.01;
+                            break;
+                        case "mm":
+                             unknown=result/0.001;
+                            break;
+                        case "mi":
+                             unknown=result/1609.34;
+                            break;
+                        case "yrd":
+                             unknown=result/0.9144;
+                            break;
+                        case "ft":
+                             unknown=result/0.3048;
+                            break;
+                        case "in":
+                             unknown=result/0.0254;
+                            break;
+                    }
+
+                document.getElementById("outputDistance").value=unknown;
+            }
+        }
+    </script>
+</div>
+</body>
+</html>
