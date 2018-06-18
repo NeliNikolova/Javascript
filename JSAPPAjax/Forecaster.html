@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forecatser</title>
+    <style>
+        #content {
+            width: 400px;
+        }
+
+        #request {
+            text-align: center;
+        }
+
+        .bl {
+            width: 300px;
+        }
+
+        #current {
+            text-align: center;
+            font-size: 2em;
+        }
+
+        #upcoming {
+            text-align: center;
+        }
+
+        .condition {
+            text-align: left;
+            display: inline-block;
+        }
+
+        .symbol {
+            font-size: 4em;
+            display: inline-block;
+        }
+
+        .forecast-data {
+            display: block;
+        }
+
+        .upcoming {
+            display: inline-block;
+            margin: 1.5em;
+        }
+
+        .label {
+            margin-top: 1em;
+            font-size: 1.5em;
+            background-color: aquamarine;
+            font-weight: 400;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<div id="content">
+    <div id="request">
+        <input id="location" class='bl' type="text">
+        <input id="submit" class="bl" type="button" value="Get Weather">
+    </div>
+    <div id="forecast" style="display:none">
+        <div id="current">
+            <div class="label">Current conditions</div>
+        </div>
+        <div id="upcoming">
+            <div class="label">Three-day forecast</div>
+        </div>
+    </div>
+</div>
+<script>
+    attachEvents();
+
+    function attachEvents() {
+        $("#submit").on("click", function () {
+            let location;
+            /* function getWeather(weather){
+                 if(weather==='Sunny'){
+                     return "&#x2600;";
+                 }
+                 else if (weather==='Partly sunny'){
+                     return "&#x26C5;";
+                 }
+                 else if (weather==='Overcast'){
+                     return "&#x2601;";}
+                 else if(weather==='Rain'){
+                     return "&#x2614;";}
+                 else if(weather==='Degrees'){
+                     return "&#176;";}
+             }
+ */
+           //
+            let icons = {
+                ['Sunny']: "&#x2600;",
+                ['Partly sunny']: "&#x26C5;",
+                ['Overcast']: "&#x2601;",
+                ['Rain']: "&#x2614;",
+                ['Degrees']: "&#176;"
+            };
+
+            $.ajax({
+                url: "https://judgetests.firebaseio.com/locations.json"
+            }).then(function (data) {
+                location = data.filter(l => l.name === $('#location').val())[0];
+                // let todayForecast = $.get(`https://judgetests.firebaseio.com/forecast/today/${location.code}.json `);
+                // let upcomingForecast = $.get(`\`https://judgetests.firebaseio.com/forecast/upcoming/${location.code}.json`);
+                $.ajax({
+                    url: `https://judgetests.firebaseio.com/forecast/today/${location.code}.json`
+                }).then(function (data) {
+                    $("#forecast").css("display", 'block');
+                    let span = $(`<span class="condition symbol">${icons[data.forecast.condition]}</span>`)
+                    $("#current").append(span);
+                    let conditionSpan = $(`<span class="condition"></span>`)
+                    $("#current").append(conditionSpan);
+                    let nameSpan = $(`<span class="forecast-data">${data.name}</span>`)
+                    let degreeSpan = $(`<span class="forecast-data">${data.forecast.low}&#176/${data.forecast.high}&#176</span>`)
+                    let weatherSpan = $(`<span class="forecast-data">${data.forecast.condition}</span>`)
+                    conditionSpan.append(nameSpan)
+                    conditionSpan.append(degreeSpan)
+                    conditionSpan.append(weatherSpan)
+                })
+                $.ajax({
+                    url: `https://judgetests.firebaseio.com/forecast/upcoming/${location.code}.json`
+                }).then(function (data) {
+                    let span = $(`<span class="upcoming"></span>`)
+                    //
+                    $('#upcoming').append(span);
+                    console.log(data)
+                    for (let obj of data.forecast) {
+                        let iconSpan = $(`<span class="forecast-data">${icons[obj.condition]}</span>`)
+                        let degreeSpan = $(`<span class="forecast-data">${obj.low}&#176/${obj.high}&#176</span>`)
+                        let weatherSpan = $(`<span class="forecast-data">${obj.condition}</span>`)
+                        span.append(iconSpan)
+                        span.append(degreeSpan)
+                        span.append(weatherSpan)
+                    }
+                })
+
+            }).catch(function () {
+                $('#forecast').html("Error");
+                $('#forecast').css("display", "block");
+            })
+
+
+        })
+    }
+</script>
+</body>
+</html>

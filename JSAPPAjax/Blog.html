@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Blog</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    </head>
+    <body>
+    <h1>All Posts</h1>
+<button id="btnLoadPosts">Load Posts</button>
+<select id="posts"></select>
+    <button id="btnViewPost">View</button>
+    <h1 id="post-title">Post Details</h1>
+<ul id="post-body"></ul>
+    <h2>Comments</h2>
+    <ul id="post-comments"></ul>
+    <script src="solution.js"></script>
+    <script>
+    attachEvents();
+    function attachEvents(){
+        const URL=`https://baas.kinvey.com/appdata/kid_HyewNTmqz/`;
+        const user="Peter";
+        const pass="p";
+        const base64auth = btoa(user + ":" + pass);
+        const auto = { "Authorization":"Basic " + base64auth};
+        let posts={};
+        $('#btnLoadPosts').on('click',function(){
+          $.ajax({
+              url:URL +"posts",
+              headers:auto
+
+          }).then(function(data){
+              $('#posts').empty()
+              for (let obj of data) {
+                  $('#posts').append(`<option value="${obj._id}">${obj.title}</option>`)
+                  posts[obj._id]=obj.body;
+              }
+
+          }).catch(function(err){
+              console.log(err)
+          })
+        })
+
+        $('#btnViewPost').on('click',function(){
+            let postId= $('#posts').find('option:selected').val();
+            let postTitle=$('#posts').find('option:selected').text();
+            $('#post-title').text(postTitle)
+            $('#post-body').text(posts[postId])
+            $.ajax({
+                url:URL +"comments"+`/?query={"post_id":"${postId}"}`,
+                headers:auto
+
+            }).then(function(data){
+                $('#post-comments').empty()
+
+                for (let obj of data) {
+                    $('#post-comments').append(`<li>${obj.text}</li>`)
+                }
+            }).catch(function(err){
+                console.log(err)
+            })
+        })
+    }
+</script>
+</body>
+</html>

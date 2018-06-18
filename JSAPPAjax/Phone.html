@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phonebook</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<h1>Phonebook</h1>
+<ul id="phonebook"></ul>
+<button id="btnLoad">Load</button>
+
+<h2>Create Contact</h2>
+Person: <input type="text" id="person"/>
+<br>
+Phone: <input type="text" id="phone"/>
+<br>
+<button id="btnCreate">Create</button>
+
+<script>
+    attachEvents();
+    function attachEvents() {
+        $('#btnLoad').click(loadMessages);
+        $('#btnCreate').click(createContact);
+        $('#delete').click(deleteContact);
+        function loadMessages() {
+
+            $.ajax({
+                url: "https://phonebook-nakov.firbeaseio.com/phonebook.json"
+            }).then(displayPhones)
+                .catch(displayError)
+        }
+
+        function displayPhones(data) {
+            for(let key in data){
+                let person = data[key]['person'];
+                let phone = data[key]['phone'];
+                console.log(person);
+                console.log(phone)
+               let li=$(`<li>${person}: ${phone}<button id="delete">Delete</button></li>`)
+               $('#phonebook').append(li)
+           }
+
+            };
+            function createContact() {
+                let newContactJSON = JSON.stringify({
+                    person: $("#person").val(),
+                    phone: $("#phone").val()
+
+                });
+                $.ajax({
+                url:'https://phonebook-nakov.firbeaseio.com/phonebook.json',
+                    data:newContactJSON})
+                    .then(loadMessages);
+
+                $('#person').val('');
+                $('#phone').val('');
+            }
+                function displayError() {
+                    $('#phonebook').append($('<li>').text("Error"));
+                }
+        function deleteContact(key) {
+            let request = {
+                method: 'DELETE',
+                url: baseServiceUrl + '/' + key + '.json'
+            };
+
+            $.ajax(request)
+                .then(loadMessages)
+                .catch(displayError);
+        }
+        }
+
+</script>
+</body>
+</html>
